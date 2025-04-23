@@ -2,7 +2,7 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import Layout from '../components/Layout';
 import ProfileCard from '../components/ProfileCard';
-import { sampleProfiles } from '../components/ProfileList';
+import { sampleProfiles } from '../data/sampleProfiles';
 
 export default function SearchResults() {
   const router = useRouter();
@@ -16,11 +16,19 @@ export default function SearchResults() {
     
     // Filter profiles based on search criteria
     const filtered = sampleProfiles.filter(profile => {
+      // Match gender (lookingFor)
       const matchesGender = !lookingFor || profile.gender === lookingFor;
-      const matchesAge = (!ageFrom || profile.age >= Number(ageFrom)) && 
-                        (!ageTo || profile.age <= Number(ageTo));
+      
+      // Match age range
+      const profileAge = profile.age;
+      const matchesAge = (!ageFrom || profileAge >= Number(ageFrom)) && 
+                        (!ageTo || profileAge <= Number(ageTo));
+      
+      // Match religion
       const matchesReligion = !religion || religion === '' || profile.religion === religion;
-      const matchesLocation = !location || location === '' || profile.city === location;
+      
+      // Match location
+      const matchesLocation = !location || location === '' || profile.city.toLowerCase() === location.toString().toLowerCase();
 
       return matchesGender && matchesAge && matchesReligion && matchesLocation;
     });
